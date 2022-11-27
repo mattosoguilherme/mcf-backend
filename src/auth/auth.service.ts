@@ -1,23 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { McfService } from 'src/mcf.service';
 import { LoginInputDto } from './dto/loginInput.dto';
-
+import * as bcrypt from 'bcrypt';
+import { LoginResponseDto } from './dto/loginResponse.dto';
 
 @Injectable()
 export class AuthService {
-  create(LoginInputDto: LoginInputDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(private jwtService: JwtService, private mcfService: McfService) {}
+  async login({ email, senha }: LoginInputDto): Promise<LoginResponseDto> {
+    const FindedUser = await this.mcfService.findUserByEmail(email);
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+    const senha_valida = await bcrypt.compare(senha, FindedUser.senha);
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!senha_valida) {
+      throw new UnauthorizedException('Email ou senha inválidos.');
+    }
 
+    delete FindedUser.senha;
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return {
+      token: this.jwtService.sign({ email }),
+      user: FindedUser,
+    };
   }
 }

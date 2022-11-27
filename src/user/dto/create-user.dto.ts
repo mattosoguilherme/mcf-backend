@@ -11,22 +11,22 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @IsNumber()
+  @IsString()
   @ApiProperty({
-    default: 1234,
+    default: "1234",
     description: 'Senha para ser utilizada para entrar no sistema',
   })
   @IsNotEmpty({ message: 'Campo senha é obrigatório' })
   @Length(4, 4)
-  senha: number;
+  senha: string;
 
-  @IsNumber()
+  @IsString()
   @ApiProperty({
-    default: 1234,
+    default: "1234",
     description:
       'Senha de confirmação para autenticar senha a ser utilizada para entrar no sistema',
   })
   @IsNotEmpty({ message: 'Campo senha_confirmacao é obrigatório' })
   @Length(4, 4)
-  senha_confirmacao: number;
+  senha_confirmacao: string;
 }

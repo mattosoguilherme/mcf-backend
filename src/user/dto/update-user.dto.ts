@@ -1,12 +1,29 @@
-import { PartialType } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 import { CreateUserDto } from './create-user.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
-  senha_confirmacao?: number;
+  @ApiProperty({
+    default: '4321',
+  })
+  senha_confirmacao?: string;
+
   @IsOptional()
-  senha?: number;
+  @ApiProperty({
+    default: '4321',
+  })
+  senha?: string;
+  
   @IsOptional()
   email?: string;
+
+  @IsString()
+  @ApiProperty({
+    default: '1234',
+    description: 'Senha cadastrada anteriormente pelo usuário',
+  })
+  @IsNotEmpty()
+  @Length(4, 4)
+  senha_atual: string;
 }

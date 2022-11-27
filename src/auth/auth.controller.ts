@@ -1,30 +1,33 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import { Role } from 'src/utils/roles.enum';
 import { AuthService } from './auth.service';
+import { LoggedUser } from './decorators/logged.decorator';
+import { Roles } from './decorators/roles.decorator';
 import { LoginInputDto } from './dto/loginInput.dto';
+import { LoginResponseDto } from './dto/loginResponse.dto';
+import { RolesGuard } from './guards/roles.guard';
 
-
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  create(@Body() LoginInputDto: LoginInputDto) {
-    return this.authService.create(LoginInputDto);
+  @ApiOperation({ summary: 'Fazer Login.' })
+  login(@Body() loginDto: LoginInputDto): Promise<LoginResponseDto> {
+    return this.authService.login(loginDto);
   }
 
   @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  @ApiOperation({ summary: 'User logado com sucesso!' })
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(AuthGuard(), RolesGuard)
+  @ApiBearerAuth()
+  me(@LoggedUser() user: User) {
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return user;
   }
 }
