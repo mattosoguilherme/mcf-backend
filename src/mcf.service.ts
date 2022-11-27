@@ -37,7 +37,7 @@ export class McfService {
 
   async findUserByEmail(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
-      where: { id: email },
+      where: { email: email },
     });
 
     if (!user) {

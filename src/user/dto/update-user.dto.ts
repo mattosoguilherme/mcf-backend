@@ -23,7 +23,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     default: '1234',
     description: 'Senha cadastrada anteriormente pelo usuário',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @Length(4, 4)
   senha_atual: string;
 }
