@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, Length } from 'class-validator';
+import { IsString, IsNotEmpty, Length, IsEmail } from 'class-validator';
 
 export class CreateUserDto {
   @IsString({ message: 'Campo login deve ser obrigatoriamente uma string' })
@@ -8,7 +8,8 @@ export class CreateUserDto {
     description: 'Este campo dever ser preenchido com nome completo',
   })
   @IsNotEmpty({ message: 'Campo nome é obrigatório' })
-  login: string;
+  @IsEmail()
+  email: string;
 
   @IsString({ message: 'Campo senha deve ser obrigatoriamente uma string' })
   @ApiProperty({

@@ -9,13 +9,13 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create({
-    login,
+    email,
     senha,
     senha_confirmacao,
   }: CreateUserDto): Promise<User> {
     return await this.prisma.user.create({
       data: {
-        login: login,
+        email: email,
         senha: senha,
       },
     });
@@ -33,12 +33,12 @@ export class UserService {
 
   async update(
     id: string,
-    { login, senha, senha_confirmacao }: UpdateUserDto,
+    { email, senha, senha_confirmacao }: UpdateUserDto,
   ): Promise<User> {
     return await this.prisma.user.update({
       where: { id: id },
       data: {
-        login: login,
+        email: email,
         senha: senha,
       },
     });
