@@ -1,18 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { McfService } from 'src/mcf.service';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private mcfService: McfService) {}
 
   async create({
     email,
     senha,
     senha_confirmacao,
   }: CreateUserDto): Promise<User> {
+    await this.mcfService.EmailValid(email);
+
+    if (senha !== senha_confirmacao) {
+      throw new ConflictException('senhas não conferem');
+    }
+
     return await this.prisma.user.create({
       data: {
         email: email,
@@ -26,6 +33,8 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<User> {
+    await this.mcfService.findUserById(id);
+
     return await this.prisma.user.findUnique({
       where: { id: id },
     });
@@ -35,6 +44,14 @@ export class UserService {
     id: string,
     { email, senha, senha_confirmacao }: UpdateUserDto,
   ): Promise<User> {
+    await this.mcfService.findUserById(id);
+
+    if (senha) {
+      if (senha !== senha_confirmacao) {
+        throw new ConflictException('senhas não conferem');
+      }
+    }
+
     return await this.prisma.user.update({
       where: { id: id },
       data: {
@@ -45,6 +62,8 @@ export class UserService {
   }
 
   async remove(id: string): Promise<User> {
+    await this.mcfService.findUserById(id);
+
     return await this.prisma.user.delete({
       where: { id: id },
     });
