@@ -4,9 +4,9 @@ import { CreateUserDto } from './create-user.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
-  senha_confirmacao?: string;
+  senha_confirmacao?: number;
   @IsOptional()
-  senha?: string;
+  senha?: number;
   @IsOptional()
   email?: string;
 }

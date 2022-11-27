@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, Length, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, Length, IsEmail, IsNumber } from 'class-validator';
 
 export class CreateUserDto {
   @IsString({ message: 'Campo login deve ser obrigatoriamente uma string' })
@@ -11,22 +11,22 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @IsString({ message: 'Campo senha deve ser obrigatoriamente uma string' })
+  @IsNumber()
   @ApiProperty({
-    default: '1234',
+    default: 1234,
     description: 'Senha para ser utilizada para entrar no sistema',
   })
-  @IsNotEmpty({ message: 'Campo nome é obrigatório' })
+  @IsNotEmpty({ message: 'Campo senha é obrigatório' })
   @Length(4, 4)
-  senha: string;
+  senha: number;
 
-  @IsString({ message: 'Campo senha deve ser obrigatoriamente uma string' })
+  @IsNumber()
   @ApiProperty({
-    default: '1234',
+    default: 1234,
     description:
       'Senha de confirmação para autenticar senha a ser utilizada para entrar no sistema',
   })
-  @IsNotEmpty({ message: 'Campo nome é obrigatório' })
+  @IsNotEmpty({ message: 'Campo senha_confirmacao é obrigatório' })
   @Length(4, 4)
-  senha_confirmacao: string;
+  senha_confirmacao: number;
 }
