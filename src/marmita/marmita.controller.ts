@@ -14,10 +14,11 @@ import { UpdateMarmitaDto } from './dto/update-marmita.dto';
 
 import { Role } from 'src/utils/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 
+@ApiTags('marmita')
 @Controller('marmita')
 export class MarmitaController {
   constructor(private readonly marmitaService: MarmitaService) {}
