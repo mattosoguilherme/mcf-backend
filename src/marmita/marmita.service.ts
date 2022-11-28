@@ -1,26 +1,56 @@
 import { Injectable } from '@nestjs/common';
+import { Marmita } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 import { CreateMarmitaDto } from './dto/create-marmita.dto';
 import { UpdateMarmitaDto } from './dto/update-marmita.dto';
 
 @Injectable()
 export class MarmitaService {
-  create(createMarmitaDto: CreateMarmitaDto) {
-    return 'This action adds a new marmita';
+  constructor(private prisma: PrismaService) {}
+
+  async create({
+    nome,
+    quantidade,
+    tipo_encomenda,
+  }: CreateMarmitaDto): Promise<Marmita> {
+    return await this.prisma.marmita.create({
+      data: {
+        nome: nome,
+        quantidade: quantidade,
+        tipo_encomenda: tipo_encomenda,
+        status: 'AGUARDANDO',
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all marmita`;
+  async findAll(): Promise<Marmita[]> {
+    return await this.prisma.marmita.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} marmita`;
+  async findOne(id: string): Promise<Marmita> {
+    return await this.prisma.marmita.findUnique({
+      where: { id: id },
+    });
   }
 
-  update(id: number, updateMarmitaDto: UpdateMarmitaDto) {
-    return `This action updates a #${id} marmita`;
+  async update(
+    id: string,
+    { nome, quantidade, tipo_encomenda, status }: UpdateMarmitaDto,
+  ): Promise<Marmita> {
+    return await this.prisma.marmita.update({
+      where: { id: id },
+      data: {
+        nome: nome,
+        quantidade: quantidade,
+        tipo_encomenda: tipo_encomenda,
+        status: status,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} marmita`;
+  async remove(id: string): Promise<Marmita> {
+    return await this.prisma.marmita.delete({
+      where: { id: id },
+    });
   }
 }
